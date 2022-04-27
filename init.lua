@@ -49,9 +49,7 @@ require('gitsigns').setup {
     change = { text = '~' },
     delete = { text = '_' },
     topdelete = { text = '‾' },
-    changedelete = { text = '~' },
-  },
-}
+    changedelete = { text = '~' }, }, }
 
 -- Telescope
 
@@ -130,7 +128,7 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 
 -- LSP settings
 local lspconfig = require 'lspconfig'
-local on_attach = function(_, bufnr)
+local common_on_attach = function(_, bufnr)
   local opts = { buffer = bufnr }
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
   vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
@@ -145,100 +143,68 @@ local on_attach = function(_, bufnr)
   vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
   vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-  vim.keymap.set({'n' ,'v'}, '<leader>ca', vim.lsp.buf.code_action, opts)
+  vim.keymap.set({ 'n', 'v' }, '<leader>ca', vim.lsp.buf.code_action, opts)
   vim.keymap.set('n', '<leader>so', require('telescope.builtin').lsp_document_symbols, opts)
+  vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+  vim.keymap.set('n', '[d]', vim.diagnostic.goto_prev, opts)
   vim.api.nvim_create_user_command("Format", vim.lsp.buf.formatting, {})
 end
 
 
 -- Enable the following language servers
-local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver' }
-local coq = require('coq')
-for _, lsp in ipairs(servers) do
- lspconfig[lsp].setup(coq.lsp_ensure_capabilities({
-    on_attach = on_attach,
-  }))
-  -- lspconfig[lsp].setup(require('coq').lsp_ensure_capabilities())
-end
-
-
-
--- Example custom server
--- Make runtime files discoverable to the server
+--
 local runtime_path = vim.split(package.path, ';')
 table.insert(runtime_path, 'lua/?.lua')
 table.insert(runtime_path, 'lua/?/init.lua')
 
-lspconfig.sumneko_lua.setup(coq.lsp_ensure_capabilities({
-  on_attach = on_attach,
-  settings = {
-    Lua = {
-      runtime = {
-        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-        version = 'LuaJIT',
-        -- Setup your lua path
-        path = runtime_path,
-      },
-      diagnostics = {
-        -- Get the language server to recognize the `vim` global
-        globals = { 'vim' },
-      },
-      workspace = {
-        -- Make the server aware of Neovim runtime files
-        library = vim.api.nvim_get_runtime_file('', true),
-      },
-      -- Do not send telemetry data containing a randomized but unique identifier
-      telemetry = {
-        enable = false,
-      },
-    },
-  },
-}))
 
--- luasnip setup
-local luasnip = require 'luasnip'
+local util = require 'vim.lsp.util'
+local formatting_callback = function(client, bufnr)
+  vim.keymap.set('n', '<leader>f', function()
+    local params = util.make_formatting_params({})
+    client.request('textDocument/formatting', params, nil, bufnr)
+  end, { buffer = bufnr })
+end
 
--- nvim-cmp setup
--- local cmp = require 'cmp'
--- cmp.setup {
---   snippet = {
---     expand = function(args)
---       luasnip.lsp_expand(args.body)
---     end,
---   },
---   mapping = cmp.mapping.preset.insert({
---     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
---     ['<C-f>'] = cmp.mapping.scroll_docs(4),
---     ['<C-Space>'] = cmp.mapping.complete(),
---     ['<CR>'] = cmp.mapping.confirm {
---       behavior = cmp.ConfirmBehavior.Replace,
---       select = true,
---     },
---     ['<Tab>'] = cmp.mapping(function(fallback)
---       if cmp.visible() then
---         cmp.select_next_item()
---       elseif luasnip.expand_or_jumpable() then
---         luasnip.expand_or_jump()
---       else
---         fallback()
---       end
---     end, { 'i', 's' }),
---     ['<S-Tab>'] = cmp.mapping(function(fallback)
---       if cmp.visible() then
---         cmp.select_prev_item()
---       elseif luasnip.jumpable(-1) then
---         luasnip.jump(-1)
---       else
---         fallback()
---       end
---     end, { 'i', 's' }),
---   }),
---   sources = {
---     { name = 'nvim_lsp' },
---     { name = 'luasnip' },
---   },
--- }
---
+local lsp_installer = require('nvim-lsp-installer')
+lsp_installer.on_server_ready(function(server)
+  local opts = {
+    on_attach = common_on_attach
+  }
+  if server.name == "tsserver" then opts = {
+      on_attach = common_on_attach
+    }
+  end
+  if server.name == "sumneko_lua" then opts = {
+      on_attach = common_on_attach,
+      settings = {
+        Lua = {
+          runtime = {
+            -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+            version = 'LuaJIT',
+            -- Setup your lua path
+            path = runtime_path,
+          },
+          diagnostics = {
+            -- Get the language server to recognize the `vim` global
+            globals = { 'vim' },
+          },
+          workspace = {
+            -- Make the server aware of Neovim runtime files
+            library = vim.api.nvim_get_runtime_file('', true),
+          },
+          -- Do not send telemetry data containing a randomized but unique identifier
+          telemetry = {
+            enable = false,
+          },
+        },
+      },
+    }
+  end
+
+  server:setup(coq.lsp_ensure_capabilities(opts))
+end
+)
 vim.keymap.set('n', '<leader>gg', ':Neogit <CR>')
 vim.keymap.set('n', '<leader>rp', ':source lua/plugins.lua')
 vim.keymap.set('n', '<leader>pi', ':PackerInstall <CR>')
@@ -268,7 +234,6 @@ require("coq_3p") {
 
 require("null-ls").setup({
   sources = {
-    require("null-ls").builtins.formatting.stylua,
     require("null-ls").builtins.diagnostics.eslint,
     require("null-ls").builtins.formatting.prettier,
     require("null-ls").builtins.code_actions.eslint,
@@ -277,6 +242,6 @@ require("null-ls").setup({
 })
 
 vim.keymap.set('n', '==', ':Format <CR>')
+vim.keymap.set('n', '<leader>ff', ':Format <CR>')
 
 vim.o.guifont = "JetbrainsMono Nerd Font:h18"
-

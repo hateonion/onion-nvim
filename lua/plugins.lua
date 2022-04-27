@@ -33,8 +33,19 @@ require('packer').startup(function(use)
   use 'ms-jpq/coq_nvim'
   use 'ms-jpq/coq.thirdparty'
 
+  use 'gpanders/editorconfig.nvim'
+  use {
+    'phaazon/hop.nvim',
+    branch = 'v1', -- optional but strongly recommended
+    config = function()
+      -- you can configure Hop the way you like here; see :h hop-config
+      require 'hop'.setup { keys = 'etovxqpdygfblzhckisuran' }
+    end
+  }
 
-  -- Add indentation guides even on blank lines
+  use 'machakann/vim-sandwich'
+
+ -- Add indentation guides even on blank lines
   use 'lukas-reineke/indent-blankline.nvim'
   -- Add git related info in the signs columns and popups
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }
