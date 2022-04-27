@@ -28,7 +28,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- Indent blankline
 require('indent_blankline').setup {
-  char = '⋅',
+  char = '|',
   show_trailing_blankline_indent = false,
 }
 
@@ -254,14 +254,11 @@ vim.o.shiftwidth = 2
 vim.o.expandtab = true
 
 vim.g.coq_settings = {
-  auto_start = 'shut-up',
+  auto_start = true,
   clients = {
     tmux = {
       enabled = false
     },
-    buffers = {
-      enabled = false
-    }
   }
 }
 
