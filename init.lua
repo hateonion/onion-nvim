@@ -28,9 +28,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- Indent blankline
 require('indent_blankline').setup {
-  char = '┊',
+  char = '⋅',
   show_trailing_blankline_indent = false,
 }
+
 
 -- Gitsigns
 require('gitsigns').setup {
@@ -50,6 +51,7 @@ require('gitsigns').setup {
 -- Treesitter configuration
 -- Parsers must be installed manually via :TSInstall
 require('nvim-treesitter.configs').setup {
+  ensure_installed = { "typescript", "lua", "rust", "beancount", "css", "scss", "yaml", "javascript", "dockerfile" },
   highlight = {
     enable = true, -- false will disable the whole extension
   },
@@ -64,6 +66,17 @@ require('nvim-treesitter.configs').setup {
   },
   indent = {
     enable = true,
+  },
+  autotag = {
+    enable = true,
+  },
+  rainbow = {
+    enable = true,
+    -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
+    extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+    max_file_lines = nil, -- Do not enable for files with more than n lines, int
+    -- colors = {}, -- table of hex strings
+    -- termcolors = {} -- table of colour name strings
   },
   textobjects = {
     select = {
@@ -123,23 +136,23 @@ local on_attach = function(_, bufnr)
   vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
   vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, opts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
-  vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, opts)
+  vim.keymap.set({'n' ,'v'}, '<leader>ca', vim.lsp.buf.code_action, opts)
   vim.keymap.set('n', '<leader>so', require('telescope.builtin').lsp_document_symbols, opts)
   vim.api.nvim_create_user_command("Format", vim.lsp.buf.formatting, {})
 end
 
--- nvim-cmp supports additional completion capabilities
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 -- Enable the following language servers
 local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver' }
+local coq = require('coq')
 for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup {
+  lspconfig[lsp].setup(coq.lsp_ensure_capabilities({
     on_attach = on_attach,
-    capabilities = capabilities,
-  }
+  }))
+  -- lspconfig[lsp].setup(require('coq').lsp_ensure_capabilities())
 end
+
+
 
 -- Example custom server
 -- Make runtime files discoverable to the server
@@ -147,9 +160,8 @@ local runtime_path = vim.split(package.path, ';')
 table.insert(runtime_path, 'lua/?.lua')
 table.insert(runtime_path, 'lua/?/init.lua')
 
-lspconfig.sumneko_lua.setup {
+lspconfig.sumneko_lua.setup(coq.lsp_ensure_capabilities({
   on_attach = on_attach,
-  capabilities = capabilities,
   settings = {
     Lua = {
       runtime = {
@@ -172,52 +184,102 @@ lspconfig.sumneko_lua.setup {
       },
     },
   },
-}
+}))
 
 -- luasnip setup
 local luasnip = require 'luasnip'
 
 -- nvim-cmp setup
-local cmp = require 'cmp'
-cmp.setup {
-  snippet = {
-    expand = function(args)
-      luasnip.lsp_expand(args.body)
-    end,
-  },
-  mapping = cmp.mapping.preset.insert({
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<CR>'] = cmp.mapping.confirm {
-      behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
+-- local cmp = require 'cmp'
+-- cmp.setup {
+--   snippet = {
+--     expand = function(args)
+--       luasnip.lsp_expand(args.body)
+--     end,
+--   },
+--   mapping = cmp.mapping.preset.insert({
+--     ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+--     ['<C-f>'] = cmp.mapping.scroll_docs(4),
+--     ['<C-Space>'] = cmp.mapping.complete(),
+--     ['<CR>'] = cmp.mapping.confirm {
+--       behavior = cmp.ConfirmBehavior.Replace,
+--       select = true,
+--     },
+--     ['<Tab>'] = cmp.mapping(function(fallback)
+--       if cmp.visible() then
+--         cmp.select_next_item()
+--       elseif luasnip.expand_or_jumpable() then
+--         luasnip.expand_or_jump()
+--       else
+--         fallback()
+--       end
+--     end, { 'i', 's' }),
+--     ['<S-Tab>'] = cmp.mapping(function(fallback)
+--       if cmp.visible() then
+--         cmp.select_prev_item()
+--       elseif luasnip.jumpable(-1) then
+--         luasnip.jump(-1)
+--       else
+--         fallback()
+--       end
+--     end, { 'i', 's' }),
+--   }),
+--   sources = {
+--     { name = 'nvim_lsp' },
+--     { name = 'luasnip' },
+--   },
+-- }
+--
+vim.keymap.set('n', '<leader>gg', ':Neogit <CR>')
+vim.keymap.set('n', '<leader>rp', ':source lua/plugins.lua')
+vim.keymap.set('n', '<leader>pi', ':PackerInstall <CR>')
+
+require 'colorizer'.setup()
+require 'colorizer'.setup({
+  'css';
+  'javascript';
+  'typescript';
+  'json';
+  'rust';
+  html = { mode = 'background' };
+}, { mode = 'foreground' })
+
+require('nvim-autopairs').setup {}
+
+vim.cmd [[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]]
+
+vim.o.tabstop = 2
+vim.o.softtabstop = 2
+vim.o.shiftwidth = 2
+vim.o.expandtab = true
+
+vim.g.coq_settings = {
+  auto_start = 'shut-up',
+  clients = {
+    tmux = {
+      enabled = false
     },
-    ['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_jumpable() then
-        luasnip.expand_or_jump()
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-    ['<S-Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.jumpable(-1) then
-        luasnip.jump(-1)
-      else
-        fallback()
-      end
-    end, { 'i', 's' }),
-  }),
-  sources = {
-    { name = 'nvim_lsp' },
-    { name = 'luasnip' },
-  },
+    buffers = {
+      enabled = false
+    }
+  }
 }
 
-vim.keymap.set('n', '<leader>gg', ':Neogit <CR>')
+require("coq_3p") {
+  { src = "copilot", short_name = "COP", accept_key = "<c-f>" },
+}
 
--- vim: ts=2 sts=2 sw=2 et
+require("null-ls").setup({
+  sources = {
+    require("null-ls").builtins.formatting.stylua,
+    require("null-ls").builtins.diagnostics.eslint,
+    require("null-ls").builtins.formatting.prettier,
+    require("null-ls").builtins.code_actions.eslint,
+    require("null-ls").builtins.completion.spell,
+  },
+})
+
+vim.keymap.set('n', '==', ':Format <CR>')
+
+vim.o.guifont = "JetbrainsMono Nerd Font:h18"
+

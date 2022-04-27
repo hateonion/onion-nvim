@@ -11,8 +11,8 @@ vim.api.nvim_create_autocmd('BufWritePost', { command = 'source <afile> | Packer
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' -- Package manager
   use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim' }
-  use 'tpope/vim-fugitive' -- Git commands in nvim
-  use 'tpope/vim-rhubarb' -- Fugitive-companion to interact with github
+  -- use 'tpope/vim-fugitive' -- Git commands in nvim
+  -- use 'tpope/vim-rhubarb' -- Fugitive-companion to interact with github
   use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
   use {
     'kyazdani42/nvim-tree.lua',
@@ -25,8 +25,15 @@ require('packer').startup(function(use)
   use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' } }
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
   use { 'nvim-telescope/telescope-project.nvim' }
+  use 'kosayoda/nvim-lightbulb'
+  -- colors
+  use 'norcalli/nvim-colorizer.lua'
   use 'mjlbach/onedark.nvim' -- Theme inspired by Atom
   use 'nvim-lualine/lualine.nvim' -- Fancier statusline
+  use 'ms-jpq/coq_nvim'
+  use 'ms-jpq/coq.thirdparty'
+
+
   -- Add indentation guides even on blank lines
   use 'lukas-reineke/indent-blankline.nvim'
   -- Add git related info in the signs columns and popups
@@ -35,9 +42,28 @@ require('packer').startup(function(use)
   use 'nvim-treesitter/nvim-treesitter'
   -- Additional textobjects for treesitter
   use 'nvim-treesitter/nvim-treesitter-textobjects'
+  use 'p00f/nvim-ts-rainbow'
+  use 'windwp/nvim-ts-autotag'
+  use 'windwp/nvim-autopairs'
+
   use 'neovim/nvim-lspconfig' -- Collection of configurations for built-in LSP client
-  use 'hrsh7th/nvim-cmp' -- Autocompletion plugin
-  use 'hrsh7th/cmp-nvim-lsp'
-  use 'saadparwaiz1/cmp_luasnip'
+  use 'williamboman/nvim-lsp-installer'
+  -- use 'hrsh7th/nvim-cmp' -- Autocompletion plugin
+  -- use 'hrsh7th/cmp-nvim-lsp'
+  -- use 'saadparwaiz1/cmp_luasnip'
   use 'L3MON4D3/LuaSnip' -- Snippets plugin
+  use 'github/copilot.vim'
+  use 'jose-elias-alvarez/null-ls.nvim'
+
+  use {
+  "folke/which-key.nvim",
+  config = function()
+    require("which-key").setup {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    }
+  end
+}
+
 end)
