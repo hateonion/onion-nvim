@@ -25,6 +25,7 @@ require('telescope').setup {
 -- Enable telescope fzf native
 require('telescope').load_extension 'fzf'
 require 'telescope'.load_extension('project')
+require "telescope".load_extension("frecency")
 
 vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers)
 vim.keymap.set('n', '<leader>pf', function()
@@ -39,4 +40,4 @@ vim.keymap.set('n', '<leader>pp', ":Telescope project<CR>")
 vim.keymap.set('n', '<leader>so', function()
   require('telescope.builtin').tags { only_current_buffer = true }
 end)
-vim.keymap.set('n', '<leader>bb', require('telescope.builtin').oldfiles)
+vim.keymap.set('n', '<leader>bb', ":Telescope frecency<CR>")

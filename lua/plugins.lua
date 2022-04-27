@@ -54,16 +54,21 @@ require('packer').startup(function(use)
   use 'L3MON4D3/LuaSnip' -- Snippets plugin
   use 'github/copilot.vim'
   use 'jose-elias-alvarez/null-ls.nvim'
+  use { "tami5/sqlite.lua" }
+  use {
+    "nvim-telescope/telescope-frecency.nvim",
+    requires = { "tami5/sqlite.lua" }
+  }
 
   use {
-  "folke/which-key.nvim",
-  config = function()
-    require("which-key").setup {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    }
-  end
-}
+    "folke/which-key.nvim",
+    config = function()
+      require("which-key").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
+    end
+  }
 
 end)

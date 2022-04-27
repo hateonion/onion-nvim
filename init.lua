@@ -1,3 +1,12 @@
+vim.g.coq_settings = {
+  auto_start = true,
+  clients = {
+    tmux = {
+      enabled = false
+    },
+  }
+}
+
 require('plugins')
 require('options')
 require('config.nvim-tree')
@@ -146,7 +155,7 @@ end
 local servers = { 'clangd', 'rust_analyzer', 'pyright', 'tsserver' }
 local coq = require('coq')
 for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup(coq.lsp_ensure_capabilities({
+ lspconfig[lsp].setup(coq.lsp_ensure_capabilities({
     on_attach = on_attach,
   }))
   -- lspconfig[lsp].setup(require('coq').lsp_ensure_capabilities())
@@ -252,15 +261,6 @@ vim.o.tabstop = 2
 vim.o.softtabstop = 2
 vim.o.shiftwidth = 2
 vim.o.expandtab = true
-
-vim.g.coq_settings = {
-  auto_start = true,
-  clients = {
-    tmux = {
-      enabled = false
-    },
-  }
-}
 
 require("coq_3p") {
   { src = "copilot", short_name = "COP", accept_key = "<c-f>" },
