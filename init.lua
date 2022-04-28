@@ -130,7 +130,7 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 local lspconfig = require 'lspconfig'
 local common_on_attach = function(client, bufnr)
   local opts = { buffer = bufnr }
-  if client.name == "tsserver" then
+  if client.name == "tsserver" or client.name == "rust_analyzer" then
     client.resolved_capabilities.document_formatting = false
   end
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
@@ -193,8 +193,22 @@ lsp_installer.on_server_ready(function(server)
       },
     }
   end
+  if server.name == "rust_analyzer" then
+    -- Initialize the LSP via rust-tools instead
+    require("rust-tools").setup {
+      -- The "server" property provided in rust-tools setup function are the
+      -- settings rust-tools will provide to lspconfig during init.            --
+      -- We merge the necessary settings from nvim-lsp-installer (server:get_default_options())
+      -- with the user's own settings (opts).
+      server = vim.tbl_deep_extend("force", server:get_default_options(), coq.lsp_ensure_capabilities(opts)),
+    }
+    server:attach_buffers()
+    -- Only if standalone support is needed
+    require("rust-tools").start_standalone_if_required()
+  else
 
-  server:setup(coq.lsp_ensure_capabilities(opts))
+    server:setup(coq.lsp_ensure_capabilities(opts))
+  end
 end
 )
 vim.keymap.set('n', '<leader>gg', ':Neogit <CR>')
@@ -224,30 +238,33 @@ require("coq_3p") {
   { src = "copilot", short_name = "COP", accept_key = "<c-f>" },
 }
 
-require('goto-preview').setup {default_mappings = true}
+require('goto-preview').setup { default_mappings = true }
 
-require("null-ls").setup({
+local null_ls = require('null-ls')
+null_ls.setup({
   sources = {
-    require("null-ls").builtins.diagnostics.eslint,
-    require("null-ls").builtins.formatting.prettier,
-    require("null-ls").builtins.code_actions.eslint,
-    require("null-ls").builtins.completion.spell,
+    null_ls.builtins.diagnostics.eslint,
+    null_ls.builtins.formatting.prettier,
+    null_ls.builtins.code_actions.eslint,
+    null_ls.builtins.completion.spell,
+    null_ls.builtins.formatting.rustfmt, 
+
   },
 })
 
 vim.keymap.set('n', '==', ':Format <CR>')
 vim.keymap.set('n', '<leader>ff', ':Format <CR>')
-vim.api.nvim_set_keymap("n", ",", ":HopWord <CR>", {silent = true })
-vim.api.nvim_set_keymap("n", "<leader>xx", ":Trouble <CR>", {silent = true })
+vim.api.nvim_set_keymap("n", ",", ":HopWord <CR>", { silent = true })
+vim.api.nvim_set_keymap("n", "<leader>xx", ":Trouble <CR>", { silent = true })
 
 vim.o.guifont = "JetbrainsMono Nerd Font:h18"
 
 require('indent-o-matic').setup {
-    -- The values indicated here are the defaults
+  -- The values indicated here are the defaults
 
-    -- Number of lines without indentation before giving up (use -1 for infinite)
-    max_lines = 2048,
+  -- Number of lines without indentation before giving up (use -1 for infinite)
+  max_lines = 2048,
 
-    -- Space indentations that should be detected
-    standard_widths = { 2, 4, 8 },
+  -- Space indentations that should be detected
+  standard_widths = { 2, 4, 8 },
 }

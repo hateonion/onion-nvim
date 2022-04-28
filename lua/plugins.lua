@@ -95,6 +95,8 @@ require('packer').startup(function(use)
     requires = { "tami5/sqlite.lua" }
   }
   use 'Darazaki/indent-o-matic'
+  use 'simrat39/rust-tools.nvim'
+
 
   use {
     "folke/which-key.nvim",
