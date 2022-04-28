@@ -128,8 +128,11 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
 
 -- LSP settings
 local lspconfig = require 'lspconfig'
-local common_on_attach = function(_, bufnr)
+local common_on_attach = function(client, bufnr)
   local opts = { buffer = bufnr }
+  if client.name == "tsserver" then
+    client.resolved_capabilities.document_formatting = false
+  end
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
   vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
@@ -159,22 +162,11 @@ table.insert(runtime_path, 'lua/?/init.lua')
 
 
 local util = require 'vim.lsp.util'
-local formatting_callback = function(client, bufnr)
-  vim.keymap.set('n', '<leader>f', function()
-    local params = util.make_formatting_params({})
-    client.request('textDocument/formatting', params, nil, bufnr)
-  end, { buffer = bufnr })
-end
-
 local lsp_installer = require('nvim-lsp-installer')
 lsp_installer.on_server_ready(function(server)
   local opts = {
     on_attach = common_on_attach
   }
-  if server.name == "tsserver" then opts = {
-      on_attach = common_on_attach
-    }
-  end
   if server.name == "sumneko_lua" then opts = {
       on_attach = common_on_attach,
       settings = {
@@ -232,6 +224,8 @@ require("coq_3p") {
   { src = "copilot", short_name = "COP", accept_key = "<c-f>" },
 }
 
+require('goto-preview').setup {default_mappings = true}
+
 require("null-ls").setup({
   sources = {
     require("null-ls").builtins.diagnostics.eslint,
@@ -243,5 +237,17 @@ require("null-ls").setup({
 
 vim.keymap.set('n', '==', ':Format <CR>')
 vim.keymap.set('n', '<leader>ff', ':Format <CR>')
+vim.api.nvim_set_keymap("n", ",", ":HopWord <CR>", {silent = true })
+vim.api.nvim_set_keymap("n", "<leader>xx", ":Trouble <CR>", {silent = true })
 
 vim.o.guifont = "JetbrainsMono Nerd Font:h18"
+
+require('indent-o-matic').setup {
+    -- The values indicated here are the defaults
+
+    -- Number of lines without indentation before giving up (use -1 for infinite)
+    max_lines = 2048,
+
+    -- Space indentations that should be detected
+    standard_widths = { 2, 4, 8 },
+}

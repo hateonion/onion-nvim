@@ -11,7 +11,7 @@ vim.api.nvim_create_autocmd('BufWritePost', { command = 'source <afile> | Packer
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' -- Package manager
   use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim' }
-  -- use 'tpope/vim-fugitive' -- Git commands in nvim
+  use 'tpope/vim-fugitive' -- Git commands in nvim
   -- use 'tpope/vim-rhubarb' -- Fugitive-companion to interact with github
   use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
   use {
@@ -24,14 +24,37 @@ require('packer').startup(function(use)
   -- UI to select things (files, grep results, open buffers...)
   use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' } }
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+  -- use {'kevinhwang91/nvim-bqf', ft = 'qf'}
+
+  -- optional
+  use {'junegunn/fzf', run = function()
+    vim.fn['fzf#install']()
+  end
+  }
   use { 'nvim-telescope/telescope-project.nvim' }
   use 'kosayoda/nvim-lightbulb'
   -- colors
   use 'norcalli/nvim-colorizer.lua'
   use 'mjlbach/onedark.nvim' -- Theme inspired by Atom
+
+  use 'marko-cerovac/material.nvim'
+
   use 'nvim-lualine/lualine.nvim' -- Fancier statusline
   use 'ms-jpq/coq_nvim'
   use 'ms-jpq/coq.thirdparty'
+  use 'f-person/git-blame.nvim'
+  use 'rmagatti/goto-preview'
+  use {
+    "folke/trouble.nvim",
+    requires = "kyazdani42/nvim-web-devicons",
+    config = function()
+      require("trouble").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
+    end
+  }
 
   use 'gpanders/editorconfig.nvim'
   use {
@@ -44,6 +67,7 @@ require('packer').startup(function(use)
   }
 
   use 'machakann/vim-sandwich'
+  use 'tpope/vim-abolish'
 
  -- Add indentation guides even on blank lines
   use 'lukas-reineke/indent-blankline.nvim'
@@ -70,6 +94,7 @@ require('packer').startup(function(use)
     "nvim-telescope/telescope-frecency.nvim",
     requires = { "tami5/sqlite.lua" }
   }
+  use 'Darazaki/indent-o-matic'
 
   use {
     "folke/which-key.nvim",
