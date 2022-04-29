@@ -22,6 +22,7 @@ require('lualine').setup {
   },
 }
 
+
 --Enable Comment.nvim
 require('Comment').setup()
 
@@ -160,57 +161,48 @@ local runtime_path = vim.split(package.path, ';')
 table.insert(runtime_path, 'lua/?.lua')
 table.insert(runtime_path, 'lua/?/init.lua')
 
+local servers = { 'rust_analyzer', 'pyright', 'tsserver', 'vimls', 'jsonls', 'yamlls', 'beancount' }
+require('nvim-lsp-installer').setup({
+  ensure_installed = servers
+})
+local coq = require('coq')
 
-local util = require 'vim.lsp.util'
-local lsp_installer = require('nvim-lsp-installer')
-lsp_installer.on_server_ready(function(server)
-  local opts = {
-    on_attach = common_on_attach
+for _, lsp in ipairs(servers) do
+  lspconfig[lsp].setup(coq.lsp_ensure_capabilities({
+    on_attach = common_on_attach,
   }
-  if server.name == "sumneko_lua" then opts = {
-      on_attach = common_on_attach,
-      settings = {
-        Lua = {
-          runtime = {
-            -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-            version = 'LuaJIT',
-            -- Setup your lua path
-            path = runtime_path,
-          },
-          diagnostics = {
-            -- Get the language server to recognize the `vim` global
-            globals = { 'vim' },
-          },
-          workspace = {
-            -- Make the server aware of Neovim runtime files
-            library = vim.api.nvim_get_runtime_file('', true),
-          },
-          -- Do not send telemetry data containing a randomized but unique identifier
-          telemetry = {
-            enable = false,
-          },
-        },
-      },
-    }
-  end
-  if server.name == "rust_analyzer" then
-    -- Initialize the LSP via rust-tools instead
-    require("rust-tools").setup {
-      -- The "server" property provided in rust-tools setup function are the
-      -- settings rust-tools will provide to lspconfig during init.            --
-      -- We merge the necessary settings from nvim-lsp-installer (server:get_default_options())
-      -- with the user's own settings (opts).
-      server = vim.tbl_deep_extend("force", server:get_default_options(), coq.lsp_ensure_capabilities(opts)),
-    }
-    server:attach_buffers()
-    -- Only if standalone support is needed
-    require("rust-tools").start_standalone_if_required()
-  else
-
-    server:setup(coq.lsp_ensure_capabilities(opts))
-  end
+  ))
 end
-)
+
+require('rust-tools').setup({})
+
+
+lspconfig.sumneko_lua.setup(coq.lsp_ensure_capabilities({
+  on_attach = common_on_attach,
+  settings = {
+    Lua = {
+      runtime = {
+        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+        version = 'LuaJIT',
+        -- Setup your lua path
+        path = runtime_path,
+      },
+      diagnostics = {
+        -- Get the language server to recognize the `vim` global
+        globals = { 'vim' },
+      },
+      workspace = {
+        -- Make the server aware of Neovim runtime files
+        library = vim.api.nvim_get_runtime_file('', true),
+      },
+      -- Do not send telemetry data containing a randomized but unique identifier
+      telemetry = {
+        enable = false,
+      },
+    },
+  },
+}))
+
 vim.keymap.set('n', '<leader>gg', ':Neogit <CR>')
 vim.keymap.set('n', '<leader>rp', ':source lua/plugins.lua')
 vim.keymap.set('n', '<leader>pi', ':PackerInstall <CR>')
@@ -243,11 +235,17 @@ require('goto-preview').setup { default_mappings = true }
 local null_ls = require('null-ls')
 null_ls.setup({
   sources = {
-    null_ls.builtins.diagnostics.eslint,
-    null_ls.builtins.formatting.prettier,
-    null_ls.builtins.code_actions.eslint,
+    null_ls.builtins.diagnostics.eslint.with({
+      prefer_local = "node_modules/.bin"
+    }),
+    null_ls.builtins.formatting.prettier.with({
+      prefer_local = "node_modules/.bin"
+    }),
+    null_ls.builtins.code_actions.eslint.with({
+      prefer_local = "node_modules/.bin"
+    }),
     null_ls.builtins.completion.spell,
-    null_ls.builtins.formatting.rustfmt, 
+    null_ls.builtins.formatting.rustfmt,
 
   },
 })
