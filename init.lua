@@ -168,10 +168,21 @@ require('nvim-lsp-installer').setup({
 local coq = require('coq')
 
 for _, lsp in ipairs(servers) do
-  lspconfig[lsp].setup(coq.lsp_ensure_capabilities({
-    on_attach = common_on_attach,
-  }
-  ))
+  if lsp == "beancount" then
+    local journal_file = os.getenv("MAIN_BEAN_FILE")
+    lspconfig[lsp].setup(coq.lsp_ensure_capabilities({
+      on_attach = common_on_attach,
+      init_options = {
+        journal_file = journal_file
+      }
+    }
+    ))
+  else
+    lspconfig[lsp].setup(coq.lsp_ensure_capabilities({
+      on_attach = common_on_attach,
+    }
+    ))
+  end
 end
 
 require('rust-tools').setup({})
@@ -266,3 +277,5 @@ require('indent-o-matic').setup {
   -- Space indentations that should be detected
   standard_widths = { 2, 4, 8 },
 }
+
+vim.api.nvim_exec([[ autocmd BufNewFile,BufRead *.bean set filetype=beancount ]], false)
