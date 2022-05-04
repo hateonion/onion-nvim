@@ -185,8 +185,11 @@ for _, lsp in ipairs(servers) do
   end
 end
 
-require('rust-tools').setup({})
-
+require('rust-tools').setup({
+  server = coq.lsp_ensure_capabilities({
+    on_attach = common_on_attach
+  })
+})
 
 lspconfig.sumneko_lua.setup(coq.lsp_ensure_capabilities({
   on_attach = common_on_attach,
