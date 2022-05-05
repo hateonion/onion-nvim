@@ -97,6 +97,7 @@ require('packer').startup(function(use)
   }
   use 'Darazaki/indent-o-matic'
   use 'simrat39/rust-tools.nvim'
+  use 'nvim-pack/nvim-spectre'
 
 
   use {

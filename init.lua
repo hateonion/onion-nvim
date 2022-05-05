@@ -22,6 +22,7 @@ require('lualine').setup {
   },
 }
 
+require('spectre').setup()
 
 --Enable Comment.nvim
 require('Comment').setup()
@@ -161,7 +162,7 @@ local runtime_path = vim.split(package.path, ';')
 table.insert(runtime_path, 'lua/?.lua')
 table.insert(runtime_path, 'lua/?/init.lua')
 
-local servers = { 'rust_analyzer', 'pyright', 'tsserver', 'vimls', 'jsonls', 'yamlls', 'beancount' }
+local servers = { 'rust_analyzer', 'pyright', 'tsserver', 'vimls', 'jsonls', 'yamlls', 'bashls', 'dockerls' }
 require('nvim-lsp-installer').setup({
   ensure_installed = servers
 })
@@ -268,6 +269,10 @@ vim.keymap.set('n', '==', ':Format <CR>')
 vim.keymap.set('n', '<leader>ff', ':Format <CR>')
 vim.api.nvim_set_keymap("n", ",", ":HopWord <CR>", { silent = true })
 vim.api.nvim_set_keymap("n", "<leader>xx", ":Trouble <CR>", { silent = true })
+vim.api.nvim_set_keymap("n", "<leader>S", "<cmd>lua require('spectre').open() <CR>", {})
+vim.api.nvim_set_keymap("n", "<leader>sw", "<cmd>lua require('spectre').open_visual({select_word=true}) <CR>", {})
+vim.api.nvim_set_keymap("v", "<leader>S", "<cmd>lua require('spectre').open_visual() <CR>", {})
+vim.api.nvim_set_keymap("n", "<leader>qq", ":q <CR>", {})
 
 vim.o.guifont = "JetbrainsMono Nerd Font:h18"
 
