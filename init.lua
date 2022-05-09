@@ -59,8 +59,19 @@ require('gitsigns').setup {
 
 -- Treesitter configuration
 -- Parsers must be installed manually via :TSInstall
+--
+local parser_config = require'nvim-treesitter.parsers'.get_parser_configs()
+parser_config.gotmpl = {
+  install_info = {
+    url = "https://github.com/ngalaiko/tree-sitter-go-template",
+    files = {"src/parser.c"}
+  },
+  filetype = "gotmpl",
+  used_by = {"gohtmltmpl", "gotexttmpl", "gotmpl", "tpl", "tmpl"}
+}
+
 require('nvim-treesitter.configs').setup {
-  ensure_installed = { "typescript", "lua", "rust", "beancount", "css", "scss", "yaml", "javascript", "dockerfile" },
+  ensure_installed = { "typescript", "lua", "rust", "beancount", "css", "scss", "yaml", "javascript", "dockerfile", "gotmpl" },
   highlight = {
     enable = true, -- false will disable the whole extension
   },
@@ -162,7 +173,7 @@ local runtime_path = vim.split(package.path, ';')
 table.insert(runtime_path, 'lua/?.lua')
 table.insert(runtime_path, 'lua/?/init.lua')
 
-local servers = { 'rust_analyzer', 'pyright', 'tsserver', 'vimls', 'jsonls', 'yamlls', 'bashls', 'dockerls' }
+local servers = { 'rust_analyzer', 'pyright', 'tsserver', 'vimls', 'jsonls', 'yamlls', 'bashls', 'dockerls', 'gopls' }
 require('nvim-lsp-installer').setup({
   ensure_installed = servers
 })
