@@ -23,7 +23,7 @@ require('packer').startup(function(use)
   }
   -- use 'ludovicchabant/vim-gutentags' -- Automatic tags management
   -- UI to select things (files, grep results, open buffers...)
-  use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim' } }
+  use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope-live-grep-raw.nvim' } }
   use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
   -- use {'kevinhwang91/nvim-bqf', ft = 'qf'}
 
