@@ -67,8 +67,9 @@ require('packer').startup(function(use)
     end
   }
 
-  use 'machakann/vim-sandwich'
+  use 'tpope/vim-surround'
   use 'tpope/vim-abolish'
+  use 'kdheepak/lazygit.nvim'
 
  -- Add indentation guides even on blank lines
   use 'lukas-reineke/indent-blankline.nvim'

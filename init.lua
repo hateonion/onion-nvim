@@ -173,7 +173,7 @@ local runtime_path = vim.split(package.path, ';')
 table.insert(runtime_path, 'lua/?.lua')
 table.insert(runtime_path, 'lua/?/init.lua')
 
-local servers = { 'rust_analyzer', 'pyright', 'tsserver', 'vimls', 'jsonls', 'yamlls', 'bashls', 'dockerls', 'gopls' }
+local servers = { 'rust_analyzer', 'pyright', 'tsserver', 'vimls', 'jsonls', 'yamlls', 'bashls', 'dockerls', 'gopls', 'denols' }
 require('nvim-lsp-installer').setup({
   ensure_installed = servers
 })
@@ -189,6 +189,16 @@ for _, lsp in ipairs(servers) do
       }
     }
     ))
+  elseif lsp == "denols" then
+    lspconfig[lsp].setup(coq.lsp_ensure_capabilities({
+      on_attach = common_on_attach,
+      root_dir = lspconfig.util.root_pattern("deno.json")
+    }))
+  elseif lsp == "tsserver" then
+    lspconfig[lsp].setup(coq.lsp_ensure_capabilities({
+      on_attach = common_on_attach,
+      root_dir = lspconfig.util.root_pattern("package.json")
+    }))
   else
     lspconfig[lsp].setup(coq.lsp_ensure_capabilities({
       on_attach = common_on_attach,
@@ -229,7 +239,7 @@ lspconfig.sumneko_lua.setup(coq.lsp_ensure_capabilities({
   },
 }))
 
-vim.keymap.set('n', '<leader>gg', ':Neogit <CR>')
+vim.keymap.set('n', '<leader>gg', ':LazyGit <CR>')
 vim.keymap.set('n', '<leader>rp', ':source lua/plugins.lua')
 vim.keymap.set('n', '<leader>pi', ':PackerInstall <CR>')
 
@@ -287,14 +297,14 @@ vim.api.nvim_set_keymap("n", "<leader>qq", ":q <CR>", {})
 
 vim.o.guifont = "JetbrainsMono Nerd Font:h18"
 
-require('indent-o-matic').setup {
-  -- The values indicated here are the defaults
-
-  -- Number of lines without indentation before giving up (use -1 for infinite)
-  max_lines = 2048,
-
-  -- Space indentations that should be detected
-  standard_widths = { 2, 4, 8 },
-}
+-- require('indent-o-matic').setup {
+--   -- The values indicated here are the defaults
+--
+--   -- Number of lines without indentation before giving up (use -1 for infinite)
+--   max_lines = 2048,
+--
+--   -- Space indentations that should be detected
+--   standard_widths = { 2, 4, 8 },
+-- }
 
 vim.api.nvim_exec([[ autocmd BufNewFile,BufRead *.bean set filetype=beancount ]], false)
