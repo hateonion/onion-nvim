@@ -10,17 +10,24 @@ vim.api.nvim_create_autocmd('BufWritePost', { command = 'source <afile> | Packer
 
 require('packer').startup(function(use)
   use 'wbthomason/packer.nvim' -- Package manager
-  use { 'TimUntersberger/neogit', requires = 'nvim-lua/plenary.nvim' }
   use 'tpope/vim-fugitive' -- Git commands in nvim
   -- use 'tpope/vim-rhubarb' -- Fugitive-companion to interact with github
   use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
   use 'bluz71/vim-nightfly-guicolors'
+
+  use "rafamadriz/friendly-snippets"
   use {
     'kyazdani42/nvim-tree.lua',
     requires = {
       'kyazdani42/nvim-web-devicons', -- optional, for file icon
     }
   }
+  use 'hrsh7th/cmp-nvim-lsp'
+  use 'hrsh7th/cmp-buffer'
+  use 'hrsh7th/cmp-path'
+  use 'hrsh7th/cmp-cmdline'
+  use 'hrsh7th/cmp-copilot'
+  use 'hrsh7th/nvim-cmp'
   -- use 'ludovicchabant/vim-gutentags' -- Automatic tags management
   -- UI to select things (files, grep results, open buffers...)
   use { 'nvim-telescope/telescope.nvim', requires = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope-live-grep-raw.nvim' } }
@@ -28,7 +35,7 @@ require('packer').startup(function(use)
   -- use {'kevinhwang91/nvim-bqf', ft = 'qf'}
 
   -- optional
-  use {'junegunn/fzf', run = function()
+  use { 'junegunn/fzf', run = function()
     vim.fn['fzf#install']()
   end
   }
@@ -36,9 +43,6 @@ require('packer').startup(function(use)
   use 'kosayoda/nvim-lightbulb'
   -- colors
   use 'norcalli/nvim-colorizer.lua'
-  use 'mjlbach/onedark.nvim' -- Theme inspired by Atom
-
-  use 'marko-cerovac/material.nvim'
 
   use 'nvim-lualine/lualine.nvim' -- Fancier statusline
   use 'ms-jpq/coq_nvim'
@@ -71,7 +75,7 @@ require('packer').startup(function(use)
   use 'tpope/vim-abolish'
   use 'kdheepak/lazygit.nvim'
 
- -- Add indentation guides even on blank lines
+  -- Add indentation guides even on blank lines
   use 'lukas-reineke/indent-blankline.nvim'
   -- Add git related info in the signs columns and popups
   use { 'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' } }
@@ -87,7 +91,7 @@ require('packer').startup(function(use)
   use 'williamboman/nvim-lsp-installer'
   -- use 'hrsh7th/nvim-cmp' -- Autocompletion plugin
   -- use 'hrsh7th/cmp-nvim-lsp'
-  -- use 'saadparwaiz1/cmp_luasnip'
+  use 'saadparwaiz1/cmp_luasnip'
   use 'L3MON4D3/LuaSnip' -- Snippets plugin
   use 'github/copilot.vim'
   use 'jose-elias-alvarez/null-ls.nvim'
@@ -96,10 +100,8 @@ require('packer').startup(function(use)
     "nvim-telescope/telescope-frecency.nvim",
     requires = { "tami5/sqlite.lua" }
   }
-  use 'Darazaki/indent-o-matic'
   use 'simrat39/rust-tools.nvim'
   use 'nvim-pack/nvim-spectre'
-
 
   use {
     "folke/which-key.nvim",
@@ -111,5 +113,4 @@ require('packer').startup(function(use)
       }
     end
   }
-
 end)
