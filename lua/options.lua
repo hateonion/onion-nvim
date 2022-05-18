@@ -25,7 +25,8 @@ vim.wo.signcolumn = 'yes'
 
 --Set colorscheme
 vim.o.termguicolors = true
-vim.cmd [[colorscheme nightfly]]
+vim.cmd [[colorscheme sonokai]]
+vim.g.sonokai_style = 'maia'
 
 --Remap space as leader key
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })

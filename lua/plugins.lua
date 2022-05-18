@@ -22,6 +22,9 @@ require('packer').startup(function(use)
       'kyazdani42/nvim-web-devicons', -- optional, for file icon
     }
   }
+  use 'marko-cerovac/material.nvim'
+  use 'sainnhe/sonokai'
+  use 'mhartington/oceanic-next'
   use 'hrsh7th/cmp-nvim-lsp'
   use 'hrsh7th/cmp-buffer'
   use 'hrsh7th/cmp-path'
