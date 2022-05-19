@@ -6,8 +6,8 @@ require('config.telecom')
 --Set statusbar
 require('lualine').setup {
   options = {
-    icons_enabled = false,
-    theme = 'onedark',
+    icons_enabled = true,
+    theme = 'sonokai',
     component_separators = '|',
     section_separators = '',
   },
@@ -63,11 +63,11 @@ parser_config.gotmpl = {
 }
 
 require('nvim-treesitter.configs').setup {
-  ensure_installed = { "typescript", "lua", "rust", "beancount", "css", "scss", "yaml", "javascript", "dockerfile", "gotmpl" },
+  ensure_installed = { "typescript", "lua", "rust", "beancount", "css", "scss", "yaml", "javascript", "dockerfile", "gotmpl", "tsx" },
   highlight = {
     enable = true, -- false will disable the whole extension
   },
-  incremental_selection = {
+ incremental_selection = {
     enable = true,
     keymaps = {
       init_selection = 'gnn',
@@ -84,7 +84,7 @@ require('nvim-treesitter.configs').setup {
   },
   rainbow = {
     enable = true,
-    disable = { "jsx", "cpp" },
+    disable = { "jsx", "cpp", },
     extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
     max_file_lines = nil, -- Do not enable for files with more than n lines, int
     -- colors = {}, -- table of hex strings
@@ -157,7 +157,7 @@ cmp.setup({
     -- { name = 'vsnip' }, -- For vsnip users.
     { name = 'luasnip' }, -- For luasnip users.
     { name = 'copilot' }, -- For luasnip users.
-    {name = 'path'},
+    { name = 'path' },
     -- { name = 'ultisnips' }, -- For ultisnips users.
     -- { name = 'snippy' }, -- For snippy users.
   }, {
@@ -305,7 +305,7 @@ require 'colorizer'.setup()
 require 'colorizer'.setup({
   'css';
   'javascript';
-  'typescript';
+  -- 'typescript';
   'json';
   'rust';
   html = { mode = 'background' };
@@ -319,10 +319,6 @@ vim.o.tabstop = 2
 vim.o.softtabstop = 2
 vim.o.shiftwidth = 2
 vim.o.expandtab = true
-
-require("coq_3p") {
-  { src = "copilot", short_name = "COP", accept_key = "<c-f>" },
-}
 
 require('goto-preview').setup { default_mappings = true }
 

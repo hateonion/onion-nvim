@@ -14,6 +14,7 @@ require('packer').startup(function(use)
   -- use 'tpope/vim-rhubarb' -- Fugitive-companion to interact with github
   use 'numToStr/Comment.nvim' -- "gc" to comment visual regions/lines
   use 'bluz71/vim-nightfly-guicolors'
+  use 'yashguptaz/calvera-dark.nvim'
 
   use "rafamadriz/friendly-snippets"
   use {
@@ -22,6 +23,7 @@ require('packer').startup(function(use)
       'kyazdani42/nvim-web-devicons', -- optional, for file icon
     }
   }
+  use 'nvim-treesitter/playground'
   use 'marko-cerovac/material.nvim'
   use 'sainnhe/sonokai'
   use 'mhartington/oceanic-next'
@@ -48,8 +50,8 @@ require('packer').startup(function(use)
   use 'norcalli/nvim-colorizer.lua'
 
   use 'nvim-lualine/lualine.nvim' -- Fancier statusline
-  use 'ms-jpq/coq_nvim'
-  use 'ms-jpq/coq.thirdparty'
+  -- use 'ms-jpq/coq_nvim'
+  -- use 'ms-jpq/coq.thirdparty'
   use 'f-person/git-blame.nvim'
   use 'rmagatti/goto-preview'
   use {
