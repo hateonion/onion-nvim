@@ -63,7 +63,7 @@ parser_config.gotmpl = {
 }
 
 require('nvim-treesitter.configs').setup {
-  ensure_installed = { "typescript", "lua", "rust", "beancount", "css", "scss", "yaml", "javascript", "dockerfile", "gotmpl", "tsx" },
+  ensure_installed = { "typescript", "lua", "rust", "beancount", "css", "scss", "yaml", "javascript", "dockerfile", "gotmpl", "tsx", "svelte" },
   highlight = {
     enable = true, -- false will disable the whole extension
   },
@@ -84,7 +84,7 @@ require('nvim-treesitter.configs').setup {
   },
   rainbow = {
     enable = true,
-    disable = { "jsx", "cpp", },
+    disable = { "jsx", "cpp", "tsx" },
     extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
     max_file_lines = nil, -- Do not enable for files with more than n lines, int
     -- colors = {}, -- table of hex strings
@@ -160,8 +160,6 @@ cmp.setup({
     { name = 'path' },
     -- { name = 'ultisnips' }, -- For ultisnips users.
     -- { name = 'snippy' }, -- For snippy users.
-  }, {
-    { name = 'buffer' },
   })
 })
 
@@ -228,7 +226,7 @@ local runtime_path = vim.split(package.path, ';')
 table.insert(runtime_path, 'lua/?.lua')
 table.insert(runtime_path, 'lua/?/init.lua')
 
-local servers = { 'rust_analyzer', 'pyright', 'tsserver', 'vimls', 'jsonls', 'yamlls', 'bashls', 'dockerls', 'gopls', 'denols', 'beancount' }
+local servers = { 'rust_analyzer', 'pyright', 'tsserver', 'vimls', 'jsonls', 'yamlls', 'bashls', 'dockerls', 'gopls', 'denols', 'beancount', 'svelte', 'rescriptls' }
 require('nvim-lsp-installer').setup({
   ensure_installed = servers
 })
@@ -305,7 +303,7 @@ require 'colorizer'.setup()
 require 'colorizer'.setup({
   'css';
   'javascript';
-  -- 'typescript';
+  'typescript';
   'json';
   'rust';
   html = { mode = 'background' };
